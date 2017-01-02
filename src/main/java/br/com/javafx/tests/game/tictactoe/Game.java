@@ -2,7 +2,7 @@ package br.com.javafx.tests.game.tictactoe;
 
 import br.com.javafx.tests.game.tictactoe.players.Player;
 import javafx.scene.Group;
-import javafx.scene.Scene;
+import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.layout.GridPane;
 
@@ -54,9 +54,8 @@ public class Game {
         currentPlayer = player1;
     }
 
-    public Scene createGame() {
+    public Node createGame() {
         Group root = new Group();
-        Scene theScene = new Scene(root);
 
         GridPane gridPane = new GridPane();
         for (int i = 0; i < 9; i++) {
@@ -69,7 +68,7 @@ public class Game {
             sprite.render(gridPane);
         }
         root.getChildren().add(gridPane);
-        return theScene;
+        return root;
     }
 
     public boolean checkEndGame(Sprite sprite) {
