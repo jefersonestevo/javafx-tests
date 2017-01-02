@@ -100,13 +100,13 @@ public class Main extends Application {
 
                 briefcase.setVelocity(0, 0);
                 if (input.contains("LEFT"))
-                    briefcase.addVelocity(-75, 0);
+                    briefcase.addVelocity(-125, 0);
                 if (input.contains("RIGHT"))
-                    briefcase.addVelocity(75, 0);
+                    briefcase.addVelocity(125, 0);
                 if (input.contains("UP"))
-                    briefcase.addVelocity(0, -75);
+                    briefcase.addVelocity(0, -125);
                 if (input.contains("DOWN"))
-                    briefcase.addVelocity(0, 75);
+                    briefcase.addVelocity(0, 125);
 
                 briefcase.update(elapsedTime);
 
