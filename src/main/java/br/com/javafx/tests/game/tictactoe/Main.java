@@ -8,10 +8,15 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
 import java.util.Optional;
@@ -28,8 +33,20 @@ public class Main extends Application {
         stage.setTitle("Tic Tac Toe");
 
         MenuBar mbar = generateMenuBar(stage);
+
         pane = new Pane();
-        pane.getChildren().add(new Label("Tic Tac Toe"));
+
+        Canvas canvas = new Canvas(240, 270);
+        pane.getChildren().add(canvas);
+
+        GraphicsContext gc = canvas.getGraphicsContext2D();
+        gc.setFill(Color.RED);
+        gc.setStroke(Color.BLACK);
+        gc.setLineWidth(2);
+        Font theFont = Font.font("Times New Roman", FontWeight.BOLD, 32);
+        gc.setFont(theFont);
+        gc.fillText("Tic Tac Toe", 35, 120);
+        gc.strokeText("Tic Tac Toe", 35, 120);
 
         VBox root = new VBox();
         HBox hBox = new HBox();
