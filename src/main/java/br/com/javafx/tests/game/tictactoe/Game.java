@@ -1,18 +1,20 @@
 package br.com.javafx.tests.game.tictactoe;
 
+import br.com.javafx.tests.game.tictactoe.players.Player;
 import javafx.scene.Group;
-import javafx.scene.control.Label;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.layout.GridPane;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class Game {
 
-    private Group parent;
     private boolean finished = false;
+    private Player player1;
+    private Player player2;
+    private Player currentPlayer = null;
     private Map<Integer, Sprite> sprites = new HashMap<Integer, Sprite>();
 
     /*
@@ -44,11 +46,18 @@ public class Game {
         };
 
 
-    public Game(Group parent) {
-        this.parent = parent;
+    public Game(Player player1, Player player2) {
+        this.player1 = player1;
+        this.player1.setPlayerState(State.X);
+        this.player2 = player2;
+        this.player2.setPlayerState(State.O);
+        currentPlayer = player1;
     }
 
-    public void createGame() {
+    public Scene createGame() {
+        Group root = new Group();
+        Scene theScene = new Scene(root);
+
         GridPane gridPane = new GridPane();
         for (int i = 0; i < 9; i++) {
             int row = i / 3;
@@ -59,38 +68,23 @@ public class Game {
             sprites.put(i, sprite);
             sprite.render(gridPane);
         }
-        this.parent.getChildren().add(gridPane);
+        root.getChildren().add(gridPane);
+        return theScene;
     }
 
-    public void update(int id) {
-        if (!checkEndGame(id)) {
-            while (true) {
-                // TODO - Implement some intelligence. It's really dumb
-                int move = Double.valueOf(Math.random() * 9).intValue();
-                Sprite sprite = sprites.get(move);
-                if (sprite.isFilled()) {
-                    continue;
-                }
-                sprite.setState(State.O);
-                checkEndGame(move);
-                break;
-            }
-        }
-    }
-
-    public boolean checkEndGame(int lastMove) {
-        Sprite sprite = sprites.get(lastMove);
-        for (int i = 0; i < winLines[lastMove].length; i++) {
-            int[] line = winLines[lastMove][i];
-            if(sprite.getState().equals(sprites.get(line[0]).getState()) && sprite.getState().equals(sprites.get(line[1]).getState())) {
-                finishGame(String.format("\"%s\" WON!!", sprite.getState().name()));
+    public boolean checkEndGame(Sprite sprite) {
+        Sprite currentSprite = sprites.get(sprite.getId());
+        for (int i = 0; i < winLines[sprite.getId()].length; i++) {
+            int[] line = winLines[sprite.getId()][i];
+            if(currentSprite.getState().equals(sprites.get(line[0]).getState()) && currentSprite.getState().equals(sprites.get(line[1]).getState())) {
+                finishGame(String.format("\"%s\" WON!!", sprite.getOwner().getName()));
                 return true;
             }
         }
 
         boolean allSpritesAreFilled = true;
-        for (Sprite currentSprite : sprites.values()) {
-            if (!currentSprite.isFilled()) {
+        for (Sprite sprite1 : sprites.values()) {
+            if (!sprite1.isFilled()) {
                 allSpritesAreFilled = false;
                 break;
             }
@@ -105,19 +99,39 @@ public class Game {
     }
 
     private void finishGame(String text) {
-        Label label = new Label(text);
-        label.setFont(Font.font("Helvetica", FontWeight.BOLD, 24));
-        label.setLayoutX(50);
-        label.setLayoutY(105);
-
-        this.parent.getChildren().add(label);
         for (Sprite sprite : sprites.values()) {
             sprite.finish();
         }
+
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Endgame!!");
+        alert.setHeaderText("Endgame!!");
+        alert.setContentText(text);
+
+        alert.showAndWait();
+
         finished = true;
+    }
+
+    public void spriteSelected(Sprite sprite) {
+        sprite.setState(currentPlayer.getPlayerState());
+        sprite.setOwner(currentPlayer);
+        if (!checkEndGame(sprite)) {
+            if (player1.equals(currentPlayer)) {
+                currentPlayer = player2;
+            } else {
+                currentPlayer = player1;
+            }
+            // Enable any bots to do his play
+            currentPlayer.afterPlayer(this);
+        }
     }
 
     public boolean isFinished() {
         return finished;
+    }
+
+    public Sprite getSprite(int move) {
+        return sprites.get(move);
     }
 }

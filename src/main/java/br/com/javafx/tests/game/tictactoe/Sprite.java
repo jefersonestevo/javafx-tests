@@ -1,5 +1,6 @@
 package br.com.javafx.tests.game.tictactoe;
 
+import br.com.javafx.tests.game.tictactoe.players.Player;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
@@ -12,6 +13,7 @@ public class Sprite {
     private int row;
     private int column;
     private State state = State.BLANK;
+    private Player owner;
 
     public Sprite(Game game, int id, int row, int column, int size) {
         this.game = game;
@@ -25,8 +27,7 @@ public class Sprite {
         this.button.setOnMouseClicked(new EventHandler<MouseEvent>() {
             public void handle(MouseEvent event) {
                 if (!Sprite.this.game.isFinished() && !Sprite.this.isFilled()) {
-                    Sprite.this.setState(State.X);
-                    Sprite.this.game.update(Sprite.this.id);
+                    Sprite.this.game.spriteSelected(Sprite.this);
                 }
             }
         });
@@ -51,5 +52,17 @@ public class Sprite {
 
     public void finish() {
         this.button.setOpacity(0.5);
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public Player getOwner() {
+        return owner;
+    }
+
+    public void setOwner(Player owner) {
+        this.owner = owner;
     }
 }

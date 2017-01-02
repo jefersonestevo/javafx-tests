@@ -1,7 +1,8 @@
 package br.com.javafx.tests.game.tictactoe;
 
+import br.com.javafx.tests.game.tictactoe.players.DumbPlayer;
+import br.com.javafx.tests.game.tictactoe.players.Player;
 import javafx.application.Application;
-import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
@@ -14,11 +15,9 @@ public class Main extends Application {
     public void start(Stage theStage) throws Exception {
         theStage.setTitle("Tic Tac Toe");
 
-        Group root = new Group();
-        Scene theScene = new Scene(root);
+        Scene theScene = new Game(new Player("User 01"), new DumbPlayer()).createGame();
+//        Scene theScene = new Game(new Player("User 01"), new Player("User 02")).createGame();
         theStage.setScene(theScene);
-
-        new Game(root).createGame();
 
         theStage.show();
     }
